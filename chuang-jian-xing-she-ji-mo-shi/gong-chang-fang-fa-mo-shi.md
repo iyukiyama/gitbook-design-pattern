@@ -1,0 +1,150 @@
+# 工厂方法模式
+
+## 模式说明
+
+在简单工厂模式中，当出现产品类的增删改时，均需要修改静态产品工厂类内的选择分支，破坏了开闭原则。针对这个不足，可以将生产不同产品的工厂也单独成类，他们继承同一个抽象工厂类。这样在出现新产品时只增加相应的产品类和生产他的工厂类，对其他代码均无需改动其他。等到要使用这个新工厂时，再在客户端中声明这个工厂的实例，由它来生产产品即可。这就是符合开闭原则的工厂方法模式。
+
+本示例以四则运算为例，演示客户端如何声明一个具体的运算工厂并通过该工厂生产相应的运算产品，然后执行该产品的产品方法(执行运算)返回结果。
+
+\
+
+
+## 结构
+
+**抽象工厂类**: 定义一个创建产品的抽象方法。 **具体工厂类**: 继承抽象工厂类，实现创建产品的抽象方法。 **抽象产品类**: 定义抽象产品方法。 **具体产品类**: 继承抽象产品类，实现抽象产品方法。
+
+\
+
+
+## 代码演示
+
+```java
+package com.yukiyama.pattern.creation;
+
+/**
+ * 工厂方法模式
+ */
+public class FactoryMethodDemo {
+
+    public static void main(String[] args) {
+        // 声明一个具体运算工厂
+        OperFactory fa = new AddFactory();
+        // 由该工厂提供运算产品
+        Oper oper = fa.createOper();
+        // 执行产品的运算方法得到结果，输出“7”
+        System.out.println(oper.result(3, 4));
+    }
+
+}
+
+/**
+ * 抽象工厂类
+ * 定义一个创建产品的抽象方法。
+ */
+abstract class OperFactory{
+    public abstract Oper createOper();
+}
+
+/**
+ * 具体工厂类
+ * 继承抽象工厂类，实现创建产品的抽象方法。
+ * 下例是加法工厂。
+ */
+class AddFactory extends OperFactory{
+    @Override
+    public Oper createOper() {
+        return new OperAdd();
+    }
+}
+
+/**
+ * 具体工厂类
+ * 下例是减法工厂。
+ */
+class SubFactory extends OperFactory{
+    @Override
+    public Oper createOper() {
+        return new OperSub();
+    }
+}
+
+/**
+ * 下例是乘法工厂
+ */
+class MulFactory extends OperFactory{
+    @Override
+    public Oper createOper() {
+        return new OperMul();
+    }
+}
+
+/**
+ * 下例是除法工厂
+ */
+class DivFactory extends OperFactory{
+    @Override
+    public Oper createOper() {
+        return new OperDiv();
+    }
+}
+
+/**
+ * 抽象产品类
+ * 定义抽象产品方法。
+ * 本示例的产品为四则运算，产品方法为运算过程。
+ */
+abstract class Oper{
+    public abstract int result(int a, int b);
+}
+
+/**
+ * 具体产品类
+ * 继承抽象产品类，实现抽象产品方法。
+ * 下例是加法产品。
+ */
+class OperAdd extends Oper{
+    @Override
+    public int result(int a, int b) {
+        return a + b;
+    }
+}
+
+/**
+ * 具体产品类
+ * 下例是减法产品。
+ */
+class OperSub extends Oper{
+    @Override
+    public int result(int a, int b) {
+        return a - b;
+    }
+}
+
+/**
+ * 具体产品类
+ * 下例是乘法产品。
+ */
+class OperMul extends Oper{
+    @Override
+    public int result(int a, int b) {
+        return a * b;
+    }
+}
+
+/**
+ * 具体产品类
+ * 下例是除法产品。
+ */
+class OperDiv extends Oper{
+    @Override
+    public int result(int a, int b) {
+        if(b == 0) {
+            System.err.println("除数不能为0.");
+            throw new IllegalArgumentException();
+        }
+        return a / b;
+    }
+}
+```
+
+**​**
